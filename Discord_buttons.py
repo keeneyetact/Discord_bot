@@ -1,3 +1,5 @@
+#this bot is used to give roles if the user clicks on the button
+
 #imports
 import discord
 from discord_components import DiscordComponents, ComponentsBot, Button
