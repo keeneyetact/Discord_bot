@@ -47,7 +47,7 @@ async def on_voice_state_update(member, before, after):
                 elif 'speakingsquad' in a.replace(" ","").lower()':
                     n=s
                 channel2 = await guild.create_voice_channel(name=f'{after.channel.name} # {n}', category=category,user_limit=after.channel.user_limit)
-                await channel2.set_permissions(member, connect=True, mute_members=True, manage_channels=True)
+                await channel2.set_permissions(guild.get_role(880117142878552064), connect=True, mute_members=False, manage_channels=False,send_messages=False)
                 await member.move_to(channel2)
                 stk.append(channel2)
                 def check(x, y, z):
