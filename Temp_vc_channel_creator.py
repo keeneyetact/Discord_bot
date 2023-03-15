@@ -8,10 +8,12 @@ from discord import ChannelType
 
 stk=[] #for renaming the temporary voice channels only
 
+Token=TOKEN
+
 @client.event
 async def on_voice_state_update(member, before, after):
     if after.channel != None:
-        old= 963085107718156368,963085251519844412,963085150445527063,963084331713171466,880117143318966315   #id of the voice channels 
+        old= 963085107718157368,963085251519847412,963085155245527063,963084331713171466,880667143318966315     #voice channels id
         if after.channel.id in old:
             for guild in client.guilds:
                 category = after.channel.category #category id
@@ -20,21 +22,29 @@ async def on_voice_state_update(member, before, after):
                 s=0
                 g=0
                 n=0
-                sp=(c.name for c in guild.channels if c.type==ChannelType.voice)
+                sp=(c.name for c in category.voice_channels if c.type==ChannelType.voice)
                 for i in sp:
-                    if 'speaking pair' in i:
+                    if 'speakingpair' in i.replace(" ","").lower():
                         p+=1
-                    elif 'speaking group' in i:
+                    elif 'speakinggroup' in i.replace(" ","").lower():
                         g+=1
-                    elif 'speaking squad' in i:
+                    elif 'speakingsquad' in i.replace(" ","").lower():
                         s+=1
-                    elif 'reading' in i:
+                    elif 'reading' in i.replace(" ","").lower():
                         n+=1
-                if after.channel.name == 'speaking group':    #group/squad/pair refers to the number of users in a voice channel
+                    elif 'writing' in i.replace(" ","").lower():
+                        n+=1
+                    elif 'listening' in i.replace(" ","").lower():
+                        n+=1
+                    else:
+                        n=123
+                        print(i)
+                a=after.channel.name
+                if 'speakinggroup' in a.replace(" ","").lower():
                     n=g
-                elif after.channel.name =='speaking pair':
+                elif 'speakingpair' in a.replace(" ","").lower():
                     n=p
-                elif after.channel.name == 'speaking squad':
+                elif 'speakingsquad' in a.replace(" ","").lower()':
                     n=s
                 channel2 = await guild.create_voice_channel(name=f'{after.channel.name} # {n}', category=category,user_limit=after.channel.user_limit)
                 await channel2.set_permissions(member, connect=True, mute_members=True, manage_channels=True)
@@ -44,10 +54,12 @@ async def on_voice_state_update(member, before, after):
                     return len(channel2.members) == 0
                 await client.wait_for('voice_state_update', check=check)
                 await channel2.delete()
-                stk.remove(channel2)    #after everyone leaves the channel is deleted
+                stk.remove(channel2)
 #channel renaming 
 @client.command()
-async def rn(ctx, *, new_name):   #renameing of the voice channel
+async def rn(ctx, *, new_name):
     channel1=ctx.author.voice.channel
     if channel1 in stk:
         await channel1.edit(name=new_name)
+        
+client.run(token)
